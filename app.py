@@ -12,7 +12,7 @@ env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 def render_template(name, d):
     # d should be a dict of key:values to populate the template
     template = env.get_template(name)
-    return template.render(d)
+    return template.render({v:urllib.parse.quote(d[v]) for v in d})
 
 @app.route("/")
 def index():
