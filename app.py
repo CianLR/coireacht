@@ -1,5 +1,5 @@
 import json
-import urllib
+import requests
 
 from flask import Flask, request
 from jinja2 import Template, Environment, FileSystemLoader
@@ -32,9 +32,8 @@ def eir_to_cord(eircode):
     url = "https://hackday.autoaddress.ie/2.0/FindAddress?key={}&address={}"
     key = 'GovHackYourWay-AATmpKey-630E84BE0C4B'
     final = url.format(key, eircode.replace(' ', '%20'))
-    print(final)
-    resp = urllib.request.urlopen(final)
-    return resp#json.load(resp)
+    resp = requests.get(final)
+    return '\n'.join(json.loads(resp.text)['postalAddress'])
         
 if __name__ == "__main__":
     app.run(host="localhost", port=4321)
