@@ -47,7 +47,8 @@ for st in garda_data[1]:
 for div in stations_by_division:
     stations_by_division[div] = sorted(
         stations_by_division[div],
-        key=lambda s: s.five_year_violent_crime_avg())
+        key=lambda s: s.five_year_violent_crime_avg(),
+        reverse=True)
 
 
 def find_nearest_station(lat, lng):
@@ -115,6 +116,10 @@ def score_for_coords(coords):
     score = (index/len(stations_by_division[ns.division]))*5
     return score
 
+worst = min(
+    stations_by_division['Dublin'],
+    key = lambda s: s.five_year_violent_crime_avg())
+print(worst.station_name)
 
 if __name__ == "__main__":
     app.run(host="localhost", port=4321)
