@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block body %}
-    <p>Eircode: {{ eircode|e }}</p>
-    <p>Address: {{ address|e }}</p>
-    <p>Coord: {{ coord_x | e }}, {{ coord_y | e}}</p>
+    <p><span class="b">Eircode</span>: {{ eircode|e }}</p>
+    <p><span class="b">Address</span>: {{ address|e }}</p>
+    <p><span class="b">Coord</span>: {{ coord_x | e }}, {{ coord_y | e}}</p>
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
     <link href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" rel="stylesheet"/>
     <div id="osm-map"></div>
