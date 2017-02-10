@@ -109,8 +109,7 @@ def ns_stats(eircode):
     score = (index/len(stations_by_division[ns.division]))*5
     return "Name {}, Score {}".format(ns.station_name, score)
 
-def score_for_eircode(eircode):
-    addr, coords = eir_to_cord(eircode)
+def score_for_coords(coords):
     ns = find_nearest_station(*coords)
     index = stations_by_division[ns.division].index(ns)
     score = (index/len(stations_by_division[ns.division]))*5
