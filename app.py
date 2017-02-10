@@ -15,19 +15,32 @@ app = Flask(__name__)
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
 
-def load_csv(filename):
+def load_garda_loc(filename):
+    locs = {}
+    with open(filename) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            name, lat, lng = row
+            locs[name] = float(lat), float(lng)
+    return locs
+
+def load_csv(filename, locs):
     titles = None
     stations = []
     with codecs.open(filename, 'r', 'iso-8859-1') as f:
         reader = csv.reader(f)
         titles = next(reader)
         for row in reader:
-            stations.append(Station(row))
+            if row[1] not in locs:
+                continue
+            stations.append(Station(row, locs[row[1]][0], locs[row[1]][1]))
     return (titles, stations)
 
-garda_data = load_csv('data/garda_stations.csv')
-print(garda_data[1][0].murders)
+loc_data = load_garda_loc('data/fixed_garda_locations.csv')
+garda_data = load_csv('data/garda_stations.csv', loc_data)
 
+def find_nearest_station(lat, lng):
+    return min(garda_data[1], key=lambda s: s.dist_from_coord(lat, lng))
 
 def render_template(name, d):
     # d should be a dict of key:values to populate the template
@@ -50,14 +63,13 @@ def details():
     print(d)
     return render_template('details.html', d)
 
-@app.route("/test/<eircode>")
 def eir_to_cord(eircode):
     url = "https://hackday.autoaddress.ie/2.0/FindAddress?key={}&address={}"
     key = 'GovHackYourWay-AATmpKey-630E84BE0C4B'
     final = url.format(key, eircode.replace(' ', '%20'))
     resp = requests.get(final)
     addr = ' '.join(json.loads(resp.text)['postalAddress'])
-    return (addr, str(addr_to_cord(addr)))
+    return (addr, addr_to_cord(addr))
 
 
 def get_garda_station_dists(x,y):
