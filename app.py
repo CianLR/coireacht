@@ -86,6 +86,11 @@ def addr_to_cord(addr):
     location = results[0]['geometry']['location']
     return location['lat'], location['lng']
 
+@app.route('/nearest_station_stats/<eircode>')
+def ns_stats(eircode):
+    addr, coords = eir_to_cord(eircode)
+    ns = find_nearest_station(*coords)
+    return "Name {}, Murders 2004 to 2016: {}".format(ns.station_name, str(ns.murders))
 
 if __name__ == "__main__":
     app.run(host="localhost", port=4321)
