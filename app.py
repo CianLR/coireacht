@@ -67,12 +67,15 @@ def details():
     eircode = request.args.get('eircode')
     addr_data = eir_to_cord(eircode)
     coords = addr_data[1]
+    crime_score = score_for_eircode(coords)
     #coords = addr_data[1].strip('()').split(',') # is a string, not a tuple
     d = {
         'eircode': eircode,
         'address': addr_data[0],
         'coord_x': coords[0], 
         'coord_y': coords[1],
+        'true_score': crime_score,
+        'rounded_score': crime_score,
     }
     print(d)
     return render_template('details.html', d)
