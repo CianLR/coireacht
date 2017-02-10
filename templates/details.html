@@ -3,8 +3,9 @@
     <p><span class="b">Eircode</span>: {{ eircode|e }}</p>
     <p><span class="b">Address</span>: {{ address|e }}</p>
     <p><span class="b">Coord</span>: {{ coord_x | e }}, {{ coord_y | e}}</p>
-    <p><span class="b">Crime score</span>: {{ true_score|e }}</p>
-    <p>{% for item in range(rounded_score)%} &#9733; {% endfor %}{% for item in range(5-rounded_score) %} &#9734; {% endfor %}</p>
+    <br/>
+    <p><span class="b">Area Safety Score</span>: <span class="{% if rounded_score <= 2 %} red {% elif rounded_score == 3 %} orange {% else %} green {% endif %}">{% for item in range(rounded_score)%} &#9733; {% endfor %}{% for item in range(5-rounded_score) %} &#9734; {% endfor %} ({{ "{:.2f}".format(true_score) }})</span></p>
+    <p>The higher the safety score (the more stars you have), the safer the area!</p>
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
     <link href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" rel="stylesheet"/>
     <div id="osm-map"></div>

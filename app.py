@@ -66,20 +66,23 @@ def index():
 @app.route("/details")
 def details():
     eircode = request.args.get('eircode')
-    addr_data = eir_to_cord(eircode)
-    coords = addr_data[1]
-    crime_score = score_for_coords(coords)
-    #coords = addr_data[1].strip('()').split(',') # is a string, not a tuple
-    d = {
-        'eircode': eircode,
-        'address': addr_data[0],
-        'coord_x': coords[0], 
-        'coord_y': coords[1],
+    try:
+        addr_data = eir_to_cord(eircode)
+        coords = addr_data[1]
+        crime_score = score_for_coords(coords)
+        #coords = addr_data[1].strip('()').split(',') # is a string, not a tuple
+        d = {
+            'eircode': eircode,
+            'address': addr_data[0],
+            'coord_x': coords[0], 
+            'coord_y': coords[1],
         'true_score': crime_score,
         'rounded_score': round(crime_score),
-    }
-    print(d)
-    return render_template('details.html', d)
+        }
+        print(d)
+        return render_template('details.html', d)
+    except:
+        return render_template('error.html', { 'eircode': eircode})
 
 def eir_to_cord(eircode):
     url = "https://hackday.autoaddress.ie/2.0/FindAddress?key={}&address={}"
