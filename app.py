@@ -7,6 +7,8 @@ import requests
 from flask import Flask, request
 from jinja2 import Template, Environment, FileSystemLoader
 
+from garda_stations import Station
+
 TEMPLATE_DIR = '/home/soso/prog/coireacht/templates'
 
 app = Flask(__name__)
@@ -15,17 +17,16 @@ env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
 def load_csv(filename):
     titles = None
-    data = []
+    stations = []
     with codecs.open(filename, 'r', 'iso-8859-1') as f:
         reader = csv.reader(f)
         titles = next(reader)
         for row in reader:
-            print('hi')
-            data.append(row)
-    return (titles, data)
+            stations.append(Station(row))
+    return (titles, stations)
 
 garda_data = load_csv('data/garda_stations.csv')
-print(garda_data[1][-1])
+print(garda_data[1][0].murders)
 
 def render_template(name, d):
     # d should be a dict of key:values to populate the template
