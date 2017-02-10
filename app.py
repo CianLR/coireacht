@@ -9,7 +9,7 @@ from jinja2 import Template, Environment, FileSystemLoader
 
 from garda_stations import Station
 
-TEMPLATE_DIR = '/home/soso/prog/coireacht/templates'
+TEMPLATE_DIR = '/home/waterloo/prog/coireacht/templates'
 
 app = Flask(__name__)
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
@@ -55,7 +55,8 @@ def index():
 def details():
     eircode = request.args.get('eircode')
     addr_data = eir_to_cord(eircode)
-    coords = addr_data[1].strip('()').split(',') # is a string, not a tuple
+    coords = addr_data[1]
+    #coords = addr_data[1].strip('()').split(',') # is a string, not a tuple
     d = {
         'eircode': eircode,
         'address': addr_data[0],
