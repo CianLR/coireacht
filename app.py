@@ -38,6 +38,17 @@ def load_csv(filename, locs):
 
 loc_data = load_garda_loc('data/fixed_garda_locations.csv')
 garda_data = load_csv('data/garda_stations.csv', loc_data)
+stations_by_division = {}
+for st in garda_data[1]:
+    if st.division in stations_by_division:
+        stations_by_division[st.division].append(st)
+    else:
+        stations_by_division[st.division] = [st]
+for div in stations_by_division:
+    stations_by_division[div] = sorted(
+        stations_by_division[div],
+        key=lambda s: s.five_year_violent_crime_avg())
+
 
 def find_nearest_station(lat, lng):
     return min(garda_data[1], key=lambda s: s.dist_from_coord(lat, lng))
@@ -91,7 +102,17 @@ def addr_to_cord(addr):
 def ns_stats(eircode):
     addr, coords = eir_to_cord(eircode)
     ns = find_nearest_station(*coords)
-    return "Name {}, Murders 2004 to 2016: {}".format(ns.station_name, str(ns.murders))
+    index = stations_by_division[ns.division].index(ns)
+    score = (index/len(stations_by_division[ns.division]))*5
+    return "Name {}, Score {}".format(ns.station_name, score)
+
+def score_for_eircode(eircode):
+    addr, coords = eir_to_cord(eircode)
+    ns = find_nearest_station(*coords)
+    index = stations_by_division[ns.division].index(ns)
+    score = (index/len(stations_by_division[ns.division]))*5
+    return score
+
 
 if __name__ == "__main__":
     app.run(host="localhost", port=4321)
