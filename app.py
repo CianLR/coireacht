@@ -28,6 +28,7 @@ def load_csv(filename):
 garda_data = load_csv('data/garda_stations.csv')
 print(garda_data[1][0].murders)
 
+
 def render_template(name, d):
     # d should be a dict of key:values to populate the template
     template = env.get_template(name)
@@ -71,6 +72,6 @@ def addr_to_cord(addr):
     location = results[0]['geometry']['location']
     return location['lat'], location['lng']
 
-        
+
 if __name__ == "__main__":
     app.run(host="localhost", port=4321)
