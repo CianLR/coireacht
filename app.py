@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from jinja2 import Template, Environment, FileSystemLoader
 
 TEMPLATE_DIR = '/home/soso/prog/coireacht/templates'
@@ -15,9 +15,10 @@ def render_template(name, d):
 def index():
     return render_template('index.html', {})
 
-@app.route("/details/<eircode>/")
-def details(eircode):
+@app.route("/details")
+def details():
+    eircode = request.args.get('eircode')
     return render_template('details.html', {})
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="localhost", port=4321)
