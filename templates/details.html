@@ -2,9 +2,9 @@
 {% block body %}
     <p><span class="b">Eircode</span>: {{ eircode|e }}</p>
     <p><span class="b">Address</span>: {{ address|e }}</p>
-    <p><span class="b">Coord</span>: {{ coord_x | e }}, {{ coord_y | e}}</p>
+    <p><span class="b">Coord</span>: {{ '{:.3f}'.format(coord_x) | e }}, {{ '{:.3f}'.format(coord_y) | e}}</p>
     <br/>
-    <p><span class="b">Area Safety Score</span>: <span class="{% if rounded_score <= 2 %} red {% elif rounded_score == 3 %} orange {% else %} green {% endif %}">{% for item in range(rounded_score)%} &#9733; {% endfor %}{% for item in range(5-rounded_score) %} &#9734; {% endfor %} ({{ "{:.2f}".format(true_score) }})</span></p>
+    <p><span class="b">Area Safety Score</span>: <span {% if rounded_score <= 2 %} style="color:#f00" {% elif rounded_score == 3 %} class="orange" {% else %} class="green" {% endif %}>{% for item in range(rounded_score)%} &#9733; {% endfor %}{% for item in range(5-rounded_score) %} &#9734; {% endfor %} ({{ "{:.2f}".format(true_score) }})</span></p>
     <p>The higher the safety score (the more stars you have), the safer the area!</p>
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
     <link href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" rel="stylesheet"/>
@@ -14,7 +14,7 @@
         var element = document.getElementById('osm-map');
 
         // Height has to be set. You can do this in CSS too.
-        element.style = 'height:300px;';
+        element.style = 'height:500px;';
 
         // Create Leaflet map on map element.
         var map = L.map(element);
@@ -29,7 +29,7 @@
         var target = L.latLng('{{ coord_x | e}}', '{{ coord_y | e }}');
 
         // Set map's center to target with zoom 14.
-        map.setView(target, 14);
+        map.setView(target, 20);
 
         // Place a marker on the same location.
         L.marker(target).addTo(map);

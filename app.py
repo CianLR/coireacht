@@ -9,7 +9,7 @@ from jinja2 import Template, Environment, FileSystemLoader
 
 from garda_stations import Station
 
-TEMPLATE_DIR = '/home/soso/prog/coireacht/templates'
+TEMPLATE_DIR = '/home/waterloo/prog/coireacht/templates'
 
 app = Flask(__name__)
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
