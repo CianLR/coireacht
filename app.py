@@ -1,3 +1,4 @@
+import urllib
 import json
 import requests
 
@@ -12,7 +13,7 @@ env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 def render_template(name, d):
     # d should be a dict of key:values to populate the template
     template = env.get_template(name)
-    return template.render({v:urllib.parse.quote(d[v]) for v in d})
+    return template.render(d)
 
 @app.route("/")
 def index():
@@ -22,7 +23,8 @@ def index():
 def details():
     eircode = request.args.get('eircode')
     d = {
-        'eircode': eircode
+        'eircode': eircode,
+        'address': eir_to_cord(eircode)
     }
     print(d)
     return render_template('details.html', d)
