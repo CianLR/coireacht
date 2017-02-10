@@ -18,7 +18,11 @@ def index():
 @app.route("/details")
 def details():
     eircode = request.args.get('eircode')
-    return render_template('details.html', {})
+    d = {
+        'eircode': eircode
+    }
+    print(d)
+    return render_template('details.html', d)
 
 if __name__ == "__main__":
     app.run(host="localhost", port=4321)
