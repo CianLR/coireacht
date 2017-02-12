@@ -3,14 +3,14 @@ import csv
 import urllib
 import json
 import requests
+import os
 
 from flask import Flask, request
 from jinja2 import Template, Environment, FileSystemLoader
 
 from garda_stations import Station
 
-TEMPLATE_DIR = '/home/waterloo/prog/coireacht/templates'
-
+TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
 app = Flask(__name__)
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
@@ -74,7 +74,7 @@ def details():
         d = {
             'eircode': eircode,
             'address': addr_data[0],
-            'coord_x': coords[0], 
+            'coord_x': coords[0],
             'coord_y': coords[1],
         'true_score': crime_score,
         'rounded_score': round(crime_score),
