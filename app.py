@@ -3,14 +3,15 @@ import csv
 import urllib
 import json
 import requests
+import os
 
+from heapq import nsmallest
 from flask import Flask, request
 from jinja2 import Template, Environment, FileSystemLoader
 
 from garda_stations import Station
 
-TEMPLATE_DIR = '/home/soso/prog/coireacht/templates'
-
+TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
 app = Flask(__name__)
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
@@ -47,12 +48,15 @@ for st in garda_data[1]:
 for div in stations_by_division:
     stations_by_division[div] = sorted(
         stations_by_division[div],
-        key=lambda s: s.five_year_violent_crime_avg(),
+        key=lambda s: s.get_score(),
         reverse=True)
 
 
-def find_nearest_station(lat, lng):
-    return min(garda_data[1], key=lambda s: s.dist_from_coord(lat, lng))
+def find_nearest_three_stations(lat, lng):
+    return nsmallest(
+        n=3,
+        iterable=garda_data[1],
+        key=lambda s: s.dist_from_coord(lat, lng))
 
 def render_template(name, d):
     # d should be a dict of key:values to populate the template
@@ -74,55 +78,62 @@ def details():
         d = {
             'eircode': eircode,
             'address': addr_data[0],
-            'coord_x': coords[0], 
+            'coord_x': coords[0],
             'coord_y': coords[1],
-        'true_score': crime_score,
-        'rounded_score': round(crime_score),
+            'true_score': crime_score,
+            'rounded_score': round(crime_score),
         }
         print(d)
         return render_template('details.html', d)
     except:
-        return render_template('error.html', { 'eircode': eircode})
+        return render_template('error.html', {'eircode': eircode})
 
 def eir_to_cord(eircode):
-    url = "https://hackday.autoaddress.ie/2.0/FindAddress?key={}&address={}"
-    key = 'GovHackYourWay-AATmpKey-630E84BE0C4B'
-    final = url.format(key, eircode.replace(' ', '%20'))
-    resp = requests.get(final)
-    addr = ' '.join(json.loads(resp.text)['postalAddress'])
-    return (addr, addr_to_cord(addr))
+    u = 'https://maps.googleapis.com/maps/api/geocode/json?address={},IRELAND'
+    resp = json.loads(requests.get(u.format(eircode)).text)
+    if resp['status'] != 'OK':
+        print("Address for eircode {} not found. Status '{}'".format(
+            eircode, resp['status']))
+        raise Exception("Eircode not found")
 
+    addr = resp['results'][0]['formatted_address']
+    lat = float(resp['results'][0]['geometry']['location']['lat'])
+    lng = float(resp['results'][0]['geometry']['location']['lng'])
+    return addr, (lat, lng)
 
-def get_garda_station_dists(x,y):
-    return [0 for i in garda_data[1]]
-
-
-def addr_to_cord(addr):
-    url = 'https://maps.googleapis.com/maps/api/geocode/json'
-    params = {'sensor': 'false', 'address': addr}
-    r = requests.get(url, params=params)
-    results = r.json()['results']
-    location = results[0]['geometry']['location']
-    return location['lat'], location['lng']
-
-@app.route('/nearest_station_stats/<eircode>')
+@app.route('/nearest_stations_stats/<eircode>')
 def ns_stats(eircode):
     addr, coords = eir_to_cord(eircode)
-    ns = find_nearest_station(*coords)
-    index = stations_by_division[ns.division].index(ns)
-    score = (index/len(stations_by_division[ns.division]))*5
-    return "Name {}, Score {}".format(ns.station_name, score)
+    score = score_for_coords(coords)
+    return "Name {}, Score {}".format(addr, score)
+
+def get_cross_division_ranking(divisions):
+    # Return a list of all stations in the given divisions, sorted worst to
+    # best.
+    stations = []
+    for div in divisions:
+        stations.extend(stations_by_division[div])
+    return sorted(stations, key=lambda s: s.get_score(), reverse=True)
 
 def score_for_coords(coords):
-    ns = find_nearest_station(*coords)
-    index = stations_by_division[ns.division].index(ns)
-    score = (index/len(stations_by_division[ns.division]))*5
+    stations = find_nearest_three_stations(*coords)
+    rank_list = get_cross_division_ranking(set(s.division for s in stations))
+    dists = []
+    rankings = []
+    for s in stations:
+        dists.append(s.dist_from_coord(*coords))
+        rankings.append(rank_list.index(s))
+    inverse_sum = sum(1/x for x in dists)
+    scale_factor = 1/inverse_sum
+    # Get a weight for each station that's inversely proportional to distance
+    # The weights all add up to 1
+    weightings = [(1/dist) * scale_factor for dist in dists]
+    # Get the estimated ranking (or index) for a Garda station on the given
+    # co-ordinates
+    weighted_index = sum(rankings[i] * weightings[i] for i in range(3))/3
+    # The score is this rank scaled from 0 to 5
+    score = ((weighted_index+1)/len(rank_list))*5
     return score
-
-worst = min(
-    stations_by_division['Dublin'],
-    key = lambda s: s.five_year_violent_crime_avg())
-print(worst.station_name)
 
 if __name__ == "__main__":
     app.run(host="localhost", port=4321)
