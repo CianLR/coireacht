@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block body %}
-    <p><span class="b">Eircode</span>: {{ eircode|e }}</p>
-    <p><span class="b">Address</span>: {{ address|e }}</p>
-    <p><span class="b">Coord</span>: {{ '{:.3f}'.format(coord_x) | e }}, {{ '{:.3f}'.format(coord_y) | e}}</p>
+    <p><span class="b">Your input</span>: {{ input|e }}</p>
+    <p><span class="b">Where we think this is</span>: {{ address|e }}</p>
+    <p><span class="b">Precise coordinates</span>: {{ '{:.3f}'.format(coord_x) | e }}, {{ '{:.3f}'.format(coord_y) | e}}</p>
     <br/>
     <p><span class="b">Area Safety Score</span>: <span {% if rounded_score <= 2 %} style="color:#f00" {% elif rounded_score == 3 %} class="orange" {% else %} class="green" {% endif %}>{% for item in range(rounded_score)%} &#9733; {% endfor %}{% for item in range(5-rounded_score) %} &#9734; {% endfor %} ({{ "{:.2f}".format(true_score) }})</span></p>
     <p>The higher the safety score (the more stars you have), the safer the area!</p>
