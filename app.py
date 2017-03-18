@@ -69,14 +69,14 @@ def index():
 
 @app.route("/details")
 def details():
-    eircode = request.args.get('eircode')
+    input_address = request.args.get('input')
     try:
-        addr_data = eir_to_cord(eircode)
+        addr_data = eir_to_cord(input_address)
         coords = addr_data[1]
         crime_score = score_for_coords(coords)
         #coords = addr_data[1].strip('()').split(',') # is a string, not a tuple
         d = {
-            'eircode': eircode,
+            'input': input_address,
             'address': addr_data[0],
             'coord_x': coords[0],
             'coord_y': coords[1],
@@ -86,13 +86,13 @@ def details():
         print(d)
         return render_template('details.html', d)
     except:
-        return render_template('error.html', {'eircode': eircode})
+        return render_template('error.html', {'input': input_address})
 
 def eir_to_cord(eircode):
     u = 'https://maps.googleapis.com/maps/api/geocode/json?address={},IRELAND'
     resp = json.loads(requests.get(u.format(eircode)).text)
     if resp['status'] != 'OK':
-        print("Address for eircode {} not found. Status '{}'".format(
+        print("Address for location {} not found. Status '{}'".format(
             eircode, resp['status']))
         raise Exception("Eircode not found")
 
@@ -101,9 +101,9 @@ def eir_to_cord(eircode):
     lng = float(resp['results'][0]['geometry']['location']['lng'])
     return addr, (lat, lng)
 
-@app.route('/nearest_stations_stats/<eircode>')
-def ns_stats(eircode):
-    addr, coords = eir_to_cord(eircode)
+@app.route('/nearest_stations_stats/<input_address>')
+def ns_stats(input_address):
+    addr, coords = eir_to_cord(input_address)
     score = score_for_coords(coords)
     return "Name {}, Score {}".format(addr, score)
 
