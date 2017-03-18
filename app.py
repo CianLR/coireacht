@@ -15,6 +15,14 @@ TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templa
 app = Flask(__name__)
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
+template_langs = {
+    'en': '',
+    'ga': 'ga'
+}
+
+def get_template(template, language):
+    return os.path.join(template_langs[language], template)
+
 
 def load_garda_loc(filename):
     locs = {}
@@ -65,10 +73,13 @@ def render_template(name, d):
 
 @app.route("/")
 def index():
-    return render_template('index.html', {})
+    lang = request.args.get('lang', default='en')
+    return render_template(get_template('index.html', lang),
+                           {'lang': lang})
 
 @app.route("/details")
 def details():
+    lang = request.args.get('lang', default='en')
     eircode = request.args.get('eircode')
     try:
         addr_data = eir_to_cord(eircode)
@@ -82,11 +93,13 @@ def details():
             'coord_y': coords[1],
             'true_score': crime_score,
             'rounded_score': round(crime_score),
+            'lang': lang
         }
         print(d)
-        return render_template('details.html', d)
+        return render_template(get_template('details.html', lang), d)
     except:
-        return render_template('error.html', {'eircode': eircode})
+        return render_template(get_template('error.html', lang), 
+            {'lang': lang, 'eircode': eircode})
 
 def eir_to_cord(eircode):
     u = 'https://maps.googleapis.com/maps/api/geocode/json?address={},IRELAND'
