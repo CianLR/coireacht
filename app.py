@@ -82,13 +82,14 @@ def details():
     lang = request.args.get('lang', default='en')
     input_address = request.args.get('input')
     try:
-        addr_data = eir_to_cord(input_address)
-        coords = addr_data[1]
+        addr, coords = eir_to_cord(input_address)
         crime_score = score_for_coords(coords)
+        uni_dists = time_to_unis(addr)
         #coords = addr_data[1].strip('()').split(',') # is a string, not a tuple
         d = {
             'input': input_address,
-            'address': addr_data[0],
+            'address': addr,
+            'dists_to_unis': uni_dists,
             'coord_x': coords[0],
             'coord_y': coords[1],
             'true_score': crime_score,
@@ -97,7 +98,8 @@ def details():
         }
         print(d)
         return render_template(get_template('details.html', lang), d)
-    except:
+    except Exception as e:
+        print(e)
         return render_template(get_template('error.html', lang), 
             {'lang': lang, 'input': input_address})
 
@@ -147,6 +149,37 @@ def score_for_coords(coords):
     # The score is this rank scaled from 0 to 5
     score = ((weighted_index+1)/len(rank_list))*5
     return score
+
+def time_to_unis(addr, unis=None, mode='walking'):
+    """Takes the address of a house and returns a list of its times to 
+    all the universities, optionally provide a list in the unis parameter to 
+    only get times to the specified addresses."""
+    uni_addrs = {
+        'DCU - Dublin City University, Glasnevin, Dublin 9': 'DCU',
+        'Trinity College Dublin, College Green, Dublin 2': 'TCD',
+        'University College Dublin, Stillorgan Rd, Belfield, Dublin 4': 'UCD',
+        'University of Limerick, Sreelane, Castletroy, Co. Limerick': 'UL',
+        'National University of Ireland, Galway, University Rd, Galway': 'NUIG',
+        'University College Cork, College Rd, University College, Cork': 'UCC',
+        'Maynooth University, Newtown Road, Kilcock, Maynooth, Co. Kildare': 'MH'
+    }
+    unis = unis or list(uni_addrs.keys())
+    url = 'https://maps.googleapis.com/maps/api/distancematrix/json?mode={}&origins={}&destinations={}'
+    filled_url = url.format(mode, addr, '|'.join(unis))
+    resp = json.loads(requests.get(filled_url).text)
+
+    times = {}
+    if resp['status'] != 'OK':
+        return times
+
+    for i, elem in enumerate(resp['rows'][0]['elements']):
+        if elem['status'] != 'OK':
+            continue
+        uni_short_name = uni_addrs[unis[i]]
+        time = elem['duration']['text']
+        times[uni_short_name] = time
+    
+    return times
 
 if __name__ == "__main__":
     app.run(host="localhost", port=4321)
