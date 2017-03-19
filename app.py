@@ -136,7 +136,7 @@ def score_for_coords(coords):
     dists = []
     rankings = []
     for s in stations:
-        dists.append(s.dist_from_coord(*coords))
+        dists.append(s.dist_from_coord(*coords) + 0.000001)
         rankings.append(rank_list.index(s))
     inverse_sum = sum(1/x for x in dists)
     scale_factor = 1/inverse_sum
