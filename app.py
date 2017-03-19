@@ -145,7 +145,7 @@ def score_for_coords(coords):
     weightings = [(1/dist) * scale_factor for dist in dists]
     # Get the estimated ranking (or index) for a Garda station on the given
     # co-ordinates
-    weighted_index = sum(rankings[i] * weightings[i] for i in range(3))/3
+    weighted_index = sum(rankings[i] * weightings[i] for i in range(3))
     # The score is this rank scaled from 0 to 5
     score = ((weighted_index+1)/len(rank_list))*5
     return score
