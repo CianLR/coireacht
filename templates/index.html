@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block body %}
-{% block blurb %}
-    <p>Have you found a property somewhere in Ireland, but you aren't familiar with the area?<br>This tool will give you some information about your potential future home, and help you decide if it's the place for you!</p>
-{% endblock %}
+<p>{% block blurb %}blurb{% endblock %}</p>
 	<br/>
-    <p>Please enter an eircode:</p>
+    <p>{{ langvalues.pleaseEnterLabel }}</p>
+    <p>{% block pleaseEnterLabel %}pleaseEnterLabel{% endblock %}:</p>
     <form action="/details" method="get">
     <input type="text" name="input" value="D08 PX8H"></input>
     <input type="hidden" name="lang" value="{{ lang }}"></input>
-    <input type="submit" value="Let's go!"></input>
+    <input type="submit" value="{% block submitText %}submitText{% endblock %}"></input>
     </form>
 {% endblock %}
+Lang values = "{{ langvalues.submitText }}"
