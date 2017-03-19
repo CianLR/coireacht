@@ -146,8 +146,8 @@ def score_for_coords(coords):
     # Get the estimated ranking (or index) for a Garda station on the given
     # co-ordinates
     weighted_index = sum(rankings[i] * weightings[i] for i in range(3))
-    # The score is this rank scaled from 0 to 5
-    score = ((weighted_index+1)/len(rank_list))*5
+    # The score is this rank scaled from 1 to 5
+    score = 1 + ((weighted_index+1)/len(rank_list))*4
     return score
 
 def time_to_unis(addr, unis=None, mode='walking'):
