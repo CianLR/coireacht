@@ -8,6 +8,7 @@ import os
 from heapq import nsmallest
 from flask import Flask, request
 from jinja2 import Template, Environment, FileSystemLoader
+from jinja2.exceptions import TemplateNotFound
 
 from garda_stations import Station
 
@@ -20,8 +21,29 @@ template_langs = {
     'ga': 'ga'
 }
 
-def get_template(template, language):
+def get_template_path(template, language):
     return os.path.join(template_langs[language], template)
+
+
+def render_template(name, d):
+    # d should be a dict of key:values to populate the template
+    template = env.get_template(name)
+    return template.render(d)
+
+
+def get_and_render_template(template, language, d=None):
+    print ('Getting template', template, 'in language', language)
+    if language not in template_langs:
+        language = 'en'
+    template_path = get_template_path(template, language)
+    if d is None:
+        d = {}
+    if 'lang' not in d:
+        d['lang'] = language
+    try:
+        return render_template(template_path, d)
+    except TemplateNotFound:
+        return render_template(get_template_path(template, 'en'), d)
 
 
 def load_garda_loc(filename):
@@ -32,6 +54,7 @@ def load_garda_loc(filename):
             name, lat, lng = row
             locs[name] = float(lat), float(lng)
     return locs
+
 
 def load_csv(filename, locs):
     titles = None
@@ -44,6 +67,7 @@ def load_csv(filename, locs):
                 continue
             stations.append(Station(row, locs[row[1]][0], locs[row[1]][1]))
     return (titles, stations)
+
 
 loc_data = load_garda_loc('data/fixed_garda_locations.csv')
 garda_data = load_csv('data/garda_stations.csv', loc_data)
@@ -66,16 +90,12 @@ def find_nearest_three_stations(lat, lng):
         iterable=garda_data[1],
         key=lambda s: s.dist_from_coord(lat, lng))
 
-def render_template(name, d):
-    # d should be a dict of key:values to populate the template
-    template = env.get_template(name)
-    return template.render(d)
 
 @app.route("/")
 def index():
     lang = request.args.get('lang', default='en')
-    return render_template(get_template('index.html', lang),
-                           {'lang': lang})
+    return get_and_render_template('index.html', lang)
+
 
 @app.route("/details")
 def details():
@@ -97,11 +117,12 @@ def details():
             'lang': lang
         }
         print(d)
-        return render_template(get_template('details.html', lang), d)
+        return get_and_render_template('details.html', lang, d)
     except Exception as e:
         print(e)
-        return render_template(get_template('error.html', lang), 
-            {'lang': lang, 'input': input_address})
+        return get_and_render_template('error.html',
+                                       lang,
+                                       {'input': input_address})
 
 def eir_to_cord(eircode):
     u = 'https://maps.googleapis.com/maps/api/geocode/json?address={},IRELAND'
