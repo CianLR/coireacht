@@ -16,7 +16,7 @@ app = Flask(__name__)
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
 template_langs = {
-    'en': '',
+    'en': 'en',
     'ga': 'ga'
 }
 

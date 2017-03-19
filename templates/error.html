@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
-{% block blurb %}
-<p>Could not find the location you entered ("<span class="green code">{{ input| e }}</span>")! Please try a different location.</p>
-{% endblock %}
+{# This template should never be called directly. It should be in a language subdirectory, with the following format: 
+    {% extends '<this_lang>/index.html' %}
+    {% block blurb %}Error text in <this_lang>{% endblock %}
+#}
