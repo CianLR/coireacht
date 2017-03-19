@@ -5,7 +5,25 @@
     <p><span class="b">{% block coordinateLabel %}coorinateLabel{% endblock %}</span>: {{ '{:.3f}'.format(coord_x) | e }}, {{ '{:.3f}'.format(coord_y) | e}}</p>
     <br/>
     <p><span class="b">{% block safetyScoreLabel %}safetyScoreLabel{% endblock %}</span>: <span {% if rounded_score <= 2 %} style="color:#f00" {% elif rounded_score == 3 %} class="orange" {% else %} class="green" {% endif %}>{% for item in range(rounded_score)%} &#9733; {% endfor %}{% for item in range(5-rounded_score) %} &#9734; {% endfor %} ({{ "{:.2f}".format(true_score) }})</span></p>
-    <p>{% block safetyScoreDescription %}safetyScoreDescription{% endblock %}</p>
+    <p>{% block safetyScoreDescription %}safetyScoreDescription{% endblock %}</p></br>
+    <p><span class="b">{% block uniDistanceLabel %}uniDistanceLabel{% endblock %}</span>
+    <select id="uni-select">
+    {% for uni in dists_to_unis|sort %}
+        <option value="{{uni}}" data-dist="{{dists_to_unis[uni]}}">{{uni}}</option>
+    {% endfor %}
+    </select>: 
+    <span id="uni-distance"></span></p></br></br>
+    <script type="text/javascript">
+        const distSpan = document.getElementById("uni-distance");
+        const uniSelect = document.getElementById("uni-select");
+        const setDistSpan = function() {
+            const index = uniSelect.selectedIndex;
+            const chosenOption = uniSelect.options[index];
+            distSpan.innerHTML = chosenOption.getAttribute("data-dist");
+        }
+        setDistSpan();
+        uniSelect.addEventListener("change", setDistSpan);
+    </script>
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
     <link href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" rel="stylesheet"/>
     <div id="osm-map"></div>
