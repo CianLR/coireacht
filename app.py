@@ -84,9 +84,9 @@ for div in stations_by_division:
         reverse=True)
 
 
-def find_nearest_three_stations(lat, lng):
+def find_nearest_n_stations(n, lat, lng):
     return nsmallest(
-        n=3,
+        n=n,
         iterable=garda_data[1],
         key=lambda s: s.dist_from_coord(lat, lng))
 
@@ -152,7 +152,8 @@ def get_cross_division_ranking(divisions):
     return sorted(stations, key=lambda s: s.get_score(), reverse=True)
 
 def score_for_coords(coords):
-    stations = find_nearest_three_stations(*coords)
+    NEAREST_STATIONS = 5
+    stations = find_nearest_n_stations(NEAREST_STATIONS, *coords)
     rank_list = get_cross_division_ranking(set(s.division for s in stations))
     dists = []
     rankings = []
@@ -166,7 +167,7 @@ def score_for_coords(coords):
     weightings = [(1/dist) * scale_factor for dist in dists]
     # Get the estimated ranking (or index) for a Garda station on the given
     # co-ordinates
-    weighted_index = sum(rankings[i] * weightings[i] for i in range(3))
+    weighted_index = sum(rank * weight for rank, weight in zip(rankings, weightings))
     # The score is this rank scaled from 1 to 5
     score = 1 + ((weighted_index+1)/len(rank_list))*4
     return score
