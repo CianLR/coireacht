@@ -189,7 +189,7 @@ def time_to_unis(addr, unis=None, mode='walking'):
     filled_url = url.format(mode, addr, '|'.join(unis))
     resp = json.loads(requests.get(filled_url).text)
 
-    times = {}
+    times = []
     if resp['status'] != 'OK':
         return times
 
@@ -198,9 +198,10 @@ def time_to_unis(addr, unis=None, mode='walking'):
             continue
         uni_short_name = uni_addrs[unis[i]]
         time = elem['duration']['text']
-        times[uni_short_name] = time
+        dist = elem['distance']['value']
+        times.append((dist, uni_short_name, time))
     
-    return times
+    return [(name, time) for _, name, time in sorted(times)]
 
 if __name__ == "__main__":
     app.run(host="localhost", port=4321)

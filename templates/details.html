@@ -8,10 +8,10 @@
     <p>{% block safetyScoreDescription %}safetyScoreDescription{% endblock %}</p></br>
     <p><span class="b">{% block uniDistanceLabel %}uniDistanceLabel{% endblock %}</span>
     <select id="uni-select">
-    {% for uni in dists_to_unis|sort %}
-        <option value="{{uni}}" data-dist="{{dists_to_unis[uni]}}">{{uni}}</option>
+    {% for uni_time in dists_to_unis %}
+        <option value="{{uni_time[1]}}" data-dist="{{uni_time[1]}}">{{uni_time[0]}}</option>
     {% endfor %}
-    </select>: 
+    </select>:  
     <span id="uni-distance"></span></p></br></br>
     <script type="text/javascript">
         const distSpan = document.getElementById("uni-distance");
