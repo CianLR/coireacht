@@ -124,6 +124,12 @@ def details():
                                        lang,
                                        {'input': input_address})
 
+@app.route("/about")
+def about():
+    lang = request.args.get('lang', default='en')
+    return get_and_render_template('about.html', lang)
+
+
 def eir_to_cord(eircode):
     u = 'https://maps.googleapis.com/maps/api/geocode/json?address={},IRELAND'
     resp = json.loads(requests.get(u.format(eircode)).text)
