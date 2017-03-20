@@ -6,11 +6,19 @@
     <title>www.safer.place</title>
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4.5.3/css/tachyons.min.css"/>
 </head>
-<body style="background-color:#fffcfb" class="obg-washed-yellow pv1 ph4 mv1 mh4 f4 tc">
-<a href="/?lang={{lang}}" style="text-decoration:none"><p class="f1 b mb0 no-underline green">www.safer.place</p></a>
+<body class="pa0 ma0">
+<div class="white bg-blue pa4 ma0 tc">
+<a href="/?lang={{lang}}" class="link"><p class="f1 b ma0 no-underline white">www.safer.place</p></a>
 <p class="f5 mt1 mb0">{{ langvalues.subtitle }}</p>
+<ul class="list pl0 pt3 f4">
+<li class="dib pr4"><a href="/about?lang={{ lang }}" class="link white">{{ langvalues.about }}</a></li>
+<li class="dib"><a href="?lang={{ langvalues.otherLangId}}" class="link white">{{ langvalues.otherLang }}</a></li>
+</ul>
+</div>
+<div class="bg-white f4 tc mh5">
 <br/>
 {% block body %}
 body
 {% endblock %}
+</div>
 </body>
