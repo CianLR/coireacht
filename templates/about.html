@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block body %}
+<ul class="list tl pl0">
+<li><p class="b">{% block what_title %}what_title{% endblock %}</p>
+<p>{% block what_answer %}what_answer{% endblock %}</p>
+</li>
+<li><p class="b">{% block how_title %}how_title{% endblock %}</p>
+<p>{% block how_answer %}how_answer{% endblock %}</p>
+</li>
+<li><p class="b">{% block gotcha_title %}gotcha_title{% endblock %}</p>
+<p>{% block gotcha_answer %}gotcha_answer{% endblock %}</p>
+</li>
+<li><p class="b">{% block open_title %}open_title{% endblock %}</p>
+<p>{% block open_answer %}open_answer{% endblock %}</p>
+</li>
+{% endblock %}
