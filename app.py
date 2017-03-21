@@ -158,7 +158,7 @@ def get_cross_division_ranking(divisions):
     return sorted(stations, key=lambda s: s.get_score(), reverse=True)
 
 def score_for_coords(coords):
-    NEAREST_STATIONS = 5
+    NEAREST_STATIONS = 3
     stations = find_nearest_n_stations(NEAREST_STATIONS, *coords)
     rank_list = get_cross_division_ranking(set(s.division for s in stations))
     dists = []
