@@ -1,13 +1,5 @@
 {% extends 'base.html' %}
 {% block body %}
 <p>{% block blurb %}blurb{% endblock %}</p>
-	<br/>
-    <p>{{ langvalues.pleaseEnterLabel }}</p>
-    <p>{% block pleaseEnterLabel %}pleaseEnterLabel{% endblock %}:</p>
-    <form action="/details" method="get">
-    <input type="text" name="input" value="D08 PX8H"></input>
-    <input type="hidden" name="lang" value="{{ lang }}"></input>
-    <input type="submit" value="{% block submitText %}submitText{% endblock %}"></input>
-    </form>
 {% endblock %}
 Lang values = "{{ langvalues.submitText }}"
