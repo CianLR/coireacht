@@ -179,8 +179,8 @@ def score_for_coords(coords):
     return score
 
 def time_to_unis(addr, unis=None, mode='walking'):
-    """Takes the address of a house and returns a list of its times to 
-    all the universities, optionally provide a list in the unis parameter to 
+    """Takes the address of a house and returns a list of its times to
+    all the universities, optionally provide a list in the unis parameter to
     only get times to the specified addresses."""
     uni_addrs = {
         'DCU - Dublin City University, Glasnevin, Dublin 9': 'DCU',
@@ -207,8 +207,8 @@ def time_to_unis(addr, unis=None, mode='walking'):
         time = elem['duration']['text']
         dist = elem['distance']['value']
         times.append((dist, uni_short_name, time))
-    
+
     return [(name, time) for _, name, time in sorted(times)]
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=4321)
+    app.run(host="0.0.0.0", port=4321)
