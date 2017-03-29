@@ -25,7 +25,7 @@
     <a href="/?lang={{ langvalues.otherLangId}}" class="link white ma3">{{ langvalues.otherLang }}</a>
   </nav>
   <div class="bg-blue tc flex justify-center">
-    <form action="details" class="mt4 mh0 w-50 shadow-3-l flex cf br2 bg-white">
+    <form action="details" class="mt4 mh0 w-50 shadow-3-l flex cf br2 bg-white" onsubmit="ga('send', 'event', 'Search', 'request')">
       <i class="material-icons f3 pl3 pt3 gray">search</i>
       <input name="input" value="{{ address|e }}" placeholder="{% block pleaseEnterLabel %}{{ pleaseEnterLabel }}{% endblock %}" class="bn f3 pa3 w-90 border-box input-reset">
       <input type="hidden" name="lang" value="{{ lang }}"></input>
