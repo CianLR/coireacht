@@ -1,6 +1,7 @@
 {% set langvalues = lang + '/values.html' %}
 {% import langvalues as langvalues %}
 <!doctype html>
+<html style="height: 100%;">
 <head>
   <meta charset="utf-8">
   <title>www.safer.place</title>
@@ -16,7 +17,7 @@
     ga('send', 'pageview');
   </script>
 </head>
-<body class="pa0 ma0">
+<body class="flex flex-column pa0 ma0" style="height: 100%; margin: 0;">
 <header class="white bg-blue pa4 ma0 tc">
   <a href="/?lang={{lang}}" class="link"><h1 class="f1 b ma0 no-underline white">www.safer.place</h1></a>
   <p class="f5 mt1 mb0">{{ langvalues.subtitle }}</p>
@@ -33,9 +34,10 @@
     </form>
   </div>
 </header>
-<content class="bg-white f4 tc mh5">
+<section id="contentdiv" class="h-100 tc f4 lh-title" style="">
 {% block body %}
 body
 {% endblock %}
-</content>
+</section>
 </body>
+</html>
