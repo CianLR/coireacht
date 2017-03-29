@@ -104,7 +104,7 @@ def details():
     try:
         addr, coords = eir_to_cord(input_address)
         crime_score = score_for_coords(coords)
-        uni_dists = time_to_unis(addr)
+        uni_dists = time_to_unis(*coords)
         #coords = addr_data[1].strip('()').split(',') # is a string, not a tuple
         d = {
             'input': input_address,
@@ -178,7 +178,7 @@ def score_for_coords(coords):
     score = 1 + ((weighted_index+1)/len(rank_list))*4
     return score
 
-def time_to_unis(addr, unis=None, mode='walking'):
+def time_to_unis(lat, lng, unis=None, mode='walking'):
     """Takes the address of a house and returns a list of its times to
     all the universities, optionally provide a list in the unis parameter to
     only get times to the specified addresses."""
@@ -192,8 +192,8 @@ def time_to_unis(addr, unis=None, mode='walking'):
         'Maynooth University, Newtown Road, Kilcock, Maynooth, Co. Kildare': 'MH'
     }
     unis = unis or list(uni_addrs.keys())
-    url = 'https://maps.googleapis.com/maps/api/distancematrix/json?mode={}&origins={}&destinations={}'
-    filled_url = url.format(mode, addr, '|'.join(unis))
+    url = 'https://maps.googleapis.com/maps/api/distancematrix/json?mode={}&origins={},{}&destinations={}'
+    filled_url = url.format(mode, lat, lng, '|'.join(unis))
     resp = json.loads(requests.get(filled_url).text)
 
     times = []
