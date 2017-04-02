@@ -31,7 +31,7 @@
   <div class="bg-blue tc flex justify-center">
     <form action="details" class="mt3 mh0 w-50 shadow-3-l flex cf br2 bg-white" onsubmit="ga('send', 'event', 'Search', 'request')">
       <i class="material-icons f3 pl3 pt3 gray">search</i>
-      <input name="input" value="{{ address|e }}" placeholder="{{ langvalues.pleaseEnterLabel }}" class="bn f3 pa3 w-90 border-box input-reset outline-0">
+      <input name="input" value="{{ input|e }}" placeholder="{{ langvalues.pleaseEnterLabel }}" class="bn f3 pa3 w-90 border-box input-reset outline-0">
       <input type="hidden" name="lang" value="{{ lang }}"></input>
       <button type="submit" class="bn f2 pa2 button-reset bg-white br2 h-100 br--right self-end pointer outline-0"><i class="material-icons">arrow_forward</i></input>
     </form>
