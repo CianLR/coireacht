@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block body %}
-    <p><span class="b">{% block yourInputLabel %}yourInputLabel{% endblock %}</span>: {{ input|e }}</p>
     <p><span class="b">{% block actualAddressLabel %}actualAddressLabel{% endblock %}</span>: {{ address|e }}</p>
     <p><span class="b">{% block coordinateLabel %}coorinateLabel{% endblock %}</span>: {{ '{:.3f}'.format(coord_x) | e }}, {{ '{:.3f}'.format(coord_y) | e}}</p>
     <br/>
