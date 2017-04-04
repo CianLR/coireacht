@@ -138,10 +138,20 @@ def eir_to_cord(eircode):
             eircode, resp['status']))
         raise Exception("Eircode not found")
 
-    addr = resp['results'][0]['formatted_address']
-    lat = float(resp['results'][0]['geometry']['location']['lat'])
-    lng = float(resp['results'][0]['geometry']['location']['lng'])
-    return addr, (lat, lng)
+    for result in resp['results']:
+        for comp in result['address_components']:
+            if 'country' in comp['types'] and comp['short_name'] == 'IE':
+                break
+        else:
+            # This result gets skipped if it's not IE
+            continue
+
+        addr = result['formatted_address']
+        lat = float(result['geometry']['location']['lat'])
+        lng = float(result['geometry']['location']['lng'])
+        return addr, (lat, lng)
+
+    raise Exception('Address not found in Ireland')
 
 @app.route('/nearest_stations_stats/<input_address>')
 def ns_stats(input_address):
