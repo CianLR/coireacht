@@ -3,7 +3,7 @@
     <p><span class="b">{% block actualAddressLabel %}actualAddressLabel{% endblock %}</span>: {{ address|e }}</p>
     <p><span class="b">{% block coordinateLabel %}coorinateLabel{% endblock %}</span>: {{ '{:.3f}'.format(coord_x) | e }}, {{ '{:.3f}'.format(coord_y) | e}}</p>
     <br/>
-    <p><span class="b">{% block safetyScoreLabel %}safetyScoreLabel{% endblock %}</span>:</p><p class="ma0 f1"><span {% if rounded_score <= 2 %} style="color:#f00" {% elif rounded_score == 3 %} class="orange" {% else %} class="green" {% endif %}>{% for item in range(rounded_score)%} &#9733; {% endfor %}{% for item in range(5-rounded_score) %} &#9734; {% endfor %} ({{ "{:.2f}".format(true_score) }})</span></p>
+    <p><span class="b">{% block safetyScoreLabel %}safetyScoreLabel{% endblock %}</span>:</p><p class="ma0 f1"><span {% if rounded_score <= 2 %} style="color:#f00" {% elif rounded_score == 3 %} class="orange" {% else %} class="green" {% endif %}>{% for item in range(rounded_score)%} &#9733; {% endfor %}{% for item in range(5-rounded_score) %} &#9734; {% endfor %}<br/>({{ "{:.2f}".format(true_score) }})</span></p>
     <p>{% block safetyScoreDescription %}safetyScoreDescription{% endblock %}</p><br/>
     <p><span class="b">{% block uniDistanceLabel %}uniDistanceLabel{% endblock %}</span>
     <select id="uni-select">
