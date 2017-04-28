@@ -90,6 +90,11 @@ def find_nearest_n_stations(n, lat, lng):
         iterable=garda_data[1],
         key=lambda s: s.dist_from_coord(lat, lng))
 
+@app.route("/static/<path:path>")
+def static_proxy(path):
+	# MIME type would be guessed
+	return app.send_static_file(path)
+
 
 @app.route("/")
 def index():
