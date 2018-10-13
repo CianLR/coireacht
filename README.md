@@ -1,5 +1,7 @@
 # coireacht
-An app to help students pick the best areas to live for college
+An app to help students pick the safest areas to live for college.
+
+See the demo live at [safer.place](http://safer.place).
 
 
 ## Data Sources
